@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>AJAX tests</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="viewerStyles.css">
+    </head>
+
+    <body>
+        <script>
+            const domain = 'https://rule34.xyz';
+
+            /*                  Получение контента из поста                    */
+
+            var contentContainer = null;
+            var contentVideoElement = null;
+            var contentImageElement = null
+            var contentStatus = {
+                contentType: null,
+                contentPost: null,
+                contentHref: null
+            };
+
+            // Показать картинку
+            function BuildImage(src)
+            {
+                if (contentStatus.contentType == "video" || contentStatus.contentType === null)
+                {
+                    contentVideoElement.style.display = "none";
+                    contentImageElement.style.display = "block";
+                }
+
+                contentStatus.contentType = "image";
+                contentStatus.contentHref = src;
+
+                contentImageElement.setAttribute("src", src);
+            }
+
+            // Показать видео
+            function BuildVideo(src)
+            {
+                if (contentStatus.contentType == "image" || contentStatus.contentType === null)
+                {
+                    contentImageElement.style.display = "none";
+                    contentVideoElement.style.display = "block";
+                }
+
+                contentStatus.contentType = "video";
+                contentStatus.contentHref = src;
+
+                contentVideoElement.setAttribute("src", src);
+            }
+
+            // Проверяет тип контента (картинка или видео)
+            // input - контейнер app-post-image с контентом
+            function CheckType(input)
+            {
+                if (/<img/.test(input) === true)
+                    return 'image';
+                else if (/<video/.test(input) === true)
+                    return 'video';
+                else
+                    return null;
+            }
+
+            // Парсит контент из input
+            // input - контейнер app-post-image с контентом
+            function GetContent(input)
+            {
+                let inputType = CheckType(input);
+                if (inputType == 'image')
+                    BuildImage(domain + /<img.*?src="([^"]+)"/.exec(input)[1]);
+                else if (inputType == 'video')
+                    BuildVideo(domain + /<video.*?src="([^"]+)"/.exec(input)[1]);
+            }
+
+            // Загружает контент из поста
+            // postLink - ссылка на пост
+            function LoadPostImage(postLink)
+            {
+                if (contentContainer.style.display == "none")
+                    contentContainer.style.display = "flex";
+                if (contentImageElement === null || contentVideoElement === null)
+                {
+                    contentVideoElement = document.querySelector('#vnc-contentVideo');
+                    contentImageElement = document.querySelector('#vnc-contentImage');
+                }
+
+                let request = new XMLHttpRequest();
+                request.open('GET', postLink);
+                request.send();
+                request.onload = function()
+                {
+                    contentStatus.contentPost = postLink;
+                    GetContent(/<app-post-image[^>]*>(.*?)<\/app-post-image>/.exec(request.response)[1]);
+                }
+            }
+
+
+
+            /*                  Функции работы со списком ссылок              */
+            // Вешаем события клика на кнопки .more-button и .page-button
+            // После клика, нужно обновить все события и списки
+
+            // У ссылок будет переопределяться событие onclick с обработкой перехода
+            // После клика на элемент, он открывается в фулл режиме и загружается позиция (для навигации)
+            
+
+
+            /*                  Функции работы с событиями                    */
+
+            function OnContentImageClicked()
+            {
+                window.open(contentStatus.contentPost, "_target");
+            }
+
+            document.addEventListener("keydown", function(event){
+                if (event.key == "Escape")
+                {
+                    contentContainer.style.display = "none";
+                    if (contentVideoElement !== null && contentVideoElement.paused === false)
+                        contentVideoElement.pause();
+                }
+                else if (event.key == "ArrowRight")
+                {
+                    console.log("Next content");
+                }
+                else if (event.key == "ArrowLeft")
+                {
+                    console.log("Prev content");
+                }
+            });
+
+
+
+            /*                  Загрузка просмотрщика                    */
+
+            window.addEventListener('DOMContentLoaded', function(event){
+                let container = document.createElement('div');
+                container.setAttribute('id', "vnc-content");
+                container.style.display = "none";
+
+                container.innerHTML = '<video id="vnc-contentVideo" style="display: block" controls loop></video>\
+                                       <img id="vnc-contentImage" style="display: none" onclick="OnContentImageClicked()">';
+
+                document.body.appendChild(container);
+                contentContainer = container;
+            });
+        </script>
+    </body>
+</html>

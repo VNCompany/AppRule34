@@ -1,0 +1,44 @@
+/*body
+{
+    margin: 0;
+    background-image: url("https://img5.goodfon.ru/wallpaper/nbig/e/d1/zakat-beautiful-seascape-sand-sea-pliazh-leto-summer-pink-vo.jpg");
+}*/
+
+#vnc-content
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    z-index: 10;
+    position: fixed;
+    width: 100%; height: 100%;
+    background-color: rgba(64, 64, 64, 0.8);
+    padding: 30px ;
+    box-sizing: border-box;
+}
+
+#vnc-contentImage, #vnc-contentVideo
+{
+    max-height: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+#vnc-contentClose
+{
+    position: absolute;
+    top: 0; right: 0;
+    color: dimgray;
+    display: block;
+    padding: 17px;
+    font-size: 24pt; font-style: normal;
+    transition: color .2s ease;
+    cursor: pointer;
+}
+
+#vnc-contentClose:hover
+{
+    color: whitesmoke;
+    transition: color .2s ease;
+}

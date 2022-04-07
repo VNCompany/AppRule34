@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "version": "1.0",
+
+    "name": "Rule 34 Viewer",
+    "description": "Rule 34 full screen image and video viewer. Supports navigation",
+
+    "background": {
+        "service_worker": "background.js"
+    },
+
+    "permissions": ["activeTab", "tabs"],
+
+    "content_scripts": [
+        {
+            "matches": ["https://rule34.xyz/*", "https://rule34.world/*"],
+            "css": ["contents/viewerStyles.css"],
+            "js": ["contents/main_script.js"]
+        }
+    ]
+}

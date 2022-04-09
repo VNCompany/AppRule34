@@ -14,8 +14,14 @@
     "content_scripts": [
         {
             "matches": ["https://rule34.xyz/*", "https://rule34.world/*"],
-            "css": ["contents/viewerStyles.css"],
-            "js": ["contents/main_script.js"]
+            "js": ["contents/xyz/main_script.js"],
+            "css": ["contents/xyz/viewerStyles.css"]
+        },
+
+        {
+            "matches": ["https://rule34.xxx/*"],
+            "js": ["contents/xxx/main_script.js"],
+            "css": ["contents/xxx/styles.css"]
         }
     ]
 }

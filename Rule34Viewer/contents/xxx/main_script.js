@@ -35,26 +35,50 @@ function vnc_OpacityAnimation(element, duration, from, to, callback = null)
     }
 }
 
-function startup()
+class VncViewer
 {
-    let container = document.getElementById('vnc-viewer');
+    _showBlock()
+    {
+        this.viewerBlock.style.opacity = 0;
+        this.viewerBlock.style.display = 'block';
+        vnc_OpacityAnimation(this.viewerBlock, 200, 0, 1, null);
+    }
+
+    _hideBlock()
+    {
+        let self = this;
+        vnc_OpacityAnimation(this.viewerBlock, 200, 1, 0, function() { self.viewerBlock.style.display = 'none'; });
+    }
+
+    constructor()
+    {
+        /* Append html function */
+        this.viewerBlock = document.getElementById('vnc-viewer');
+        this.imageBlock = document.getElementById('vnc-viewer-image');
+        this.videoBlock = document.getElementById('vnc-viewer-video');
+
+        let closeButton = document.getElementById('vnc-viewer-btn-close');
+        closeButton.addEventListener('click', this._onCloseClicked.bind(this));
+    }
+
+    showImage(url)
+    {
+        
+    }
+
+
+    // Event Listeners
+
+    _onCloseClicked(event)
+    {
+        this._hideBlock();
+    }
 }
 
-document.addEventListener('DOMContentLoaded', function (event) {
-    startup();
-});
 
-var test_button = document.getElementById('test-button');
+let contentViewer = new VncViewer();
 
-test_button.addEventListener('click', function (event) {
-    let element = document.getElementById('vnc-viewer');
-
-    vnc_OpacityAnimation(element, 200, 0.0, 1.0);
-});
-
-var btn_close = document.getElementById('vnc-viewer-btn-close');
-btn_close.addEventListener('click', function (event) {
-    let element = document.getElementById('vnc-viewer');
-
-    vnc_OpacityAnimation(element, 200, 1, 0, () => console.log('ok'));
+document.getElementById('test-button').addEventListener('click', function(event)
+{
+    contentViewer._showBlock();
 });

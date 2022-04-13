@@ -8,10 +8,25 @@
 
     <body>
         <button id="test-button">Click</button>
-        <div style="display: none;" id="vnc-viewer">
-            <div id="vnc-viewer-container">
-                <img style="display: none;" id="vnc-viewer-image" src="https://wimg.rule34.xxx//images/3315/d120070b024fb3514aacbcc41c5130de.jpeg">
-                <video style="display: none;" id="vnc-viewer-video" loop controls src="https://api-cdn-mp4.rule34.xxx/images/5196/e221d643e8914bad41063f1ebd2bef67.mp4"></video>
+        <div style="/*display: none;*/" id="vnc-viewer">
+            <div class="viewer-wrapper">
+                <div class="viewer-navigation" id="vnc-viewer-btn-left">
+                    <svg width="32">
+                        <path fill="none" stroke-width="4" stroke="lightgray" d="M32,0L2,38L32,76"></path>
+                    </svg>
+                </div>
+
+                <div class="vnc-viewer-container">
+                    <img alt="Nothing" id="vnc-viewer-image" src="./image.jpg">
+<!--                    <img  id="vnc-viewer-image" src="https://yt3.ggpht.com/a/AGF-l78w5U1LvWKqoaIyS9i8PQY3V-csXzoC-iHkrQ=s900-c-k-c0xffffffff-no-rj-mo">-->
+                    <video style="display: none;" id="vnc-viewer-video" loop controls src="https://ws-cdn-video.rule34.xxx//images/5211/ca6ddb969d3911a8b7b9bb2e8be18e1f.mp4"></video>
+                </div>
+
+                <div class="viewer-navigation" id="vnc-viewer-btn-right">
+                    <svg width="34">
+                        <path fill="none" stroke-width="4" stroke="lightgray" d="M0,0L30,38L0,76"></path>
+                    </svg>
+                </div>
             </div>
 
             <i id="vnc-viewer-btn-close">&#9587;</i>

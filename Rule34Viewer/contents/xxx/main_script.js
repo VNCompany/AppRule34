@@ -12,7 +12,7 @@ function vnc_OpacityAnimation(element, duration, from, to, callback = null)
     {
         let opacityCounter = from;
         let animationInterval = setInterval(function () {
-            if (counter == ticks)
+            if (counter === ticks)
             {
                 clearInterval(animationInterval);
                 element.style.opacity = to;
@@ -52,33 +52,75 @@ class VncViewer
 
     constructor()
     {
+        let self = this;
+
         /* Append html function */
         this.viewerBlock = document.getElementById('vnc-viewer');
         this.imageBlock = document.getElementById('vnc-viewer-image');
         this.videoBlock = document.getElementById('vnc-viewer-video');
 
+        this.status = {
+            type: "video",
+
+        };
+
+        // Events
+
         let closeButton = document.getElementById('vnc-viewer-btn-close');
         closeButton.addEventListener('click', this._onCloseClicked.bind(this));
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === "Escape")
+                this._onCloseClicked();
+            else if (event.key === "ArrowRight")
+                this._onNavigationClicked("vnc-viewer-btn-right");
+            else if (event.key === "ArrowLeft")
+                this._onNavigationClicked("vnc-viewer-btn-left");
+        });
+
+        let navigation = document.querySelectorAll('#vnc-viewer .viewer-navigation');
+        for (let i = 0; i < navigation.length; i++) {
+            navigation[i].addEventListener('click', function () {
+                self._onNavigationClicked.call(self, this.id);
+            });
+        }
     }
 
     showImage(url)
     {
-        
+
     }
 
 
     // Event Listeners
 
-    _onCloseClicked(event)
+    _onCloseClicked()
     {
+        if (this.status.type === "video")
+        {
+            if (!this.videoBlock.paused)
+                this.videoBlock.pause();
+        }
         this._hideBlock();
+    }
+
+    _onNavigationClicked(id)
+    {
+        if (id.endsWith("right"))
+        {
+            console.log("next");
+        }
+        else if (id.endsWith("left"))
+        {
+            console.log("back");
+        }
     }
 }
 
 
 let contentViewer = new VncViewer();
 
-document.getElementById('test-button').addEventListener('click', function(event)
+document.getElementById('test-button').addEventListener('click', function()
 {
     contentViewer._showBlock();
 });

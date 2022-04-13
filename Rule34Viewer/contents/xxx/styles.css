@@ -3,7 +3,8 @@ body
     margin: 0;
     background-image: url("./raven.jpg");
     background-repeat: no-repeat;
-    background-size: 100%;
+
+    height: 100vh;
 }
 
 #vnc-viewer
@@ -35,15 +36,39 @@ body
     transition: color .2s;
 }
 
-#vnc-viewer-container
+#vnc-viewer .viewer-wrapper
 {
-    border: 1px dashed red;
-    margin: 0 65px;
+    height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+}
+
+#vnc-viewer .vnc-viewer-container
+{
     height: 100%;
     display: flex;
     align-items: center;
     flex-direction: row;
     box-sizing: border-box;
+    flex-grow: 1;
+}
+
+#vnc-viewer .viewer-navigation
+{
+    cursor: pointer;
+    box-sizing: border-box;
+    width: 75px;
+    padding: 0 20px;
+    opacity: 0.3;
+    transition: opacity 200ms;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+#vnc-viewer .viewer-navigation:hover
+{
+    opacity: 1;
+    transition: opacity 200ms;
 }
 
 #vnc-viewer-image, #vnc-viewer-video

@@ -65,16 +65,31 @@ class VncViewer
         }
     }
 
-    _getImageUrlById(id, isFull)
+    _getImageUrlByIdAsync(id, isFull = true)
     {
-        // Next: Add load image/video
+        return fetch(`https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&id=${id}`, {
+            method: "GET",
+            credentials: "same-origin"
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
+            let filename = json[0].image;
+            let type = filename.toLowerCase().endsWith('.mp4') ? "video" : "image";
+            let resultUrl = null;
+            if (type === "image" && !isFull)
+                resultUrl = json[0].sample_url;
+            else
+                resultUrl = json[0].file_url;
+            return {
+                contentType: type,
+                url: resultUrl
+            };
+        });
     }
 
     constructor()
     {
         let self = this;
-        this.xhr = new XMLHttpRequest();
-
         this._getList();
 
 
@@ -84,8 +99,10 @@ class VncViewer
         this.videoBlock = document.getElementById('vnc-viewer-video');
 
         this.status = {
+            active: false,
             type: undefined,
-            current_url: undefined
+            currentUrl: undefined,
+            currentPos: undefined
         };
 
         // Events
@@ -110,7 +127,7 @@ class VncViewer
         }
     }
 
-    showImage(url)
+    loadPost(url)
     {
 
     }

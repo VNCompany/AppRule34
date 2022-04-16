@@ -23,5 +23,11 @@
             "js": ["contents/xxx/main_script.js"],
             "css": ["contents/xxx/styles.css"]
         }
-    ]
+    ],
+
+    "icons": {
+        "16": "icons/rule34_16.png",
+        "48": "icons/rule34_48.png",
+        "128": "icons/rule34_128.png"
+    }
 }

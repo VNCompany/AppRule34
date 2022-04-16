@@ -79,7 +79,7 @@ class VncViewer
         }
     }
 
-    _getImageUrlByIdAsync(id, isFull = true)
+    _getImageUrlByIdAsync(id)
     {
         return fetch(`https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&id=${id}`, {
             method: "GET",
@@ -89,14 +89,10 @@ class VncViewer
         }).then((json) => {
             let filename = json[0].image;
             let type = filename.toLowerCase().endsWith('.mp4') ? "video" : "image";
-            let resultUrl = undefined;
-            if (type === "image" && !isFull)
-                resultUrl = json[0].sample_url;
-            else
-                resultUrl = json[0].file_url;
             return {
                 contentType: type,
-                url: resultUrl
+                sampleUrl: json[0].sample_url,
+                url: json[0].file_url
             };
         });
     }
@@ -115,7 +111,7 @@ class VncViewer
 
         this.status = {
             active: false,
-            type: undefined,
+            contentType: undefined,
             currentUrl: undefined,
             currentPos: undefined
         };
@@ -147,6 +143,10 @@ class VncViewer
         this.imageBlock.onload = () => {
             this.viewerContainer.style.opacity = '1.0';
         };
+
+        this.imageBlock.addEventListener('click', function () {
+            window.open(this.dataset.orig, "_blank");
+        });
     }
 
     loadPost(id)
@@ -155,11 +155,33 @@ class VncViewer
             this._showBlock();
 
         this.viewerContainer.style.opacity = '0.3';
-        this._getImageUrlByIdAsync(id).then((obj) => {
+        this._getImageUrlByIdAsync(id, false).then((obj) => {
             if (obj.contentType === "image")
             {
-                this.imageBlock.style.display = "block";
-                this.imageBlock.setAttribute("src", obj.url);
+                if (this.status.contentType === "video")
+                {
+                    if (!this.videoBlock.paused)
+                        this.videoBlock.pause();
+                    this.videoBlock.style.display = "none";
+                }
+                if (this.status.contentType !== "image")
+                {
+                    this.imageBlock.style.display = "block";
+                    this.status.contentType = "image";
+                }
+                this.imageBlock.setAttribute("src", obj.sampleUrl);
+                this.imageBlock.dataset.orig = obj.url;
+            }
+            else if (obj.contentType === "video")
+            {
+                if (this.status.contentType !== "video")
+                {
+                    this.imageBlock.style.display = "none";
+                    this.videoBlock.style.display = "block";
+                    this.status.contentType = "video";
+                }
+                this.videoBlock.setAttribute("src", obj.url);
+                this.viewerContainer.style.opacity = "1";
             }
         });
     }
@@ -169,7 +191,7 @@ class VncViewer
 
     _onCloseClicked()
     {
-        if (this.status.type === "video")
+        if (this.status.contentType === "video")
         {
             if (!this.videoBlock.paused)
                 this.videoBlock.pause();
